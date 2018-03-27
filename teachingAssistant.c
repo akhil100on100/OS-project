@@ -26,5 +26,5 @@ void *student(void *stud_id)
 }
 void *assistant()
 {
-        //work in progress
+       //work in progress
 }
