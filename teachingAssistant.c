@@ -18,15 +18,6 @@ sem_t s_Tass;
 pthread_mutex_t mutex;
 
 int wait_room[3],stud_wait=0,next_seat_pos=0,next_teach_pos=0,ta_flag=0;
-
-void *student(void *stud_id)
-{
-        //work in progress
-}
-void *assistant()
-{
-       //work in progress
-}
 int isnum(char num[])
 {
         int i;
@@ -50,6 +41,44 @@ int iswait(int stud_id)
                 }
         }
         return 0;
+}
+
+
+void *student(void *stud_id)
+{
+        //work in progress
+}
+void *assistant()
+{
+    printf("Checking for students.\n");
+    while(1)
+    {
+	 	if(stud_wait>0)
+    	{
+       		ta_flag=0;
+       		sem_wait(&s_stud);
+       		pthread_mutex_lock(&mutex);
+       		int ht=rand()%5;
+		printf("\nTeacher is teaching student %d ",wait_room[next_teach_pos]);
+		wait_room[next_teach_pos]=0;
+		stud_wait--;
+		printf("\nWaiting students : seat-1 <%d>  ||  seat-2 <%d>  ||  seat-3 <%d>",wait_room[0],wait_room[1],wait_room[2]);
+		next_teach_pos=(next_teach_pos+1)%wait_chairs;
+		sleep(ht);
+		printf("\n\t*!*!*!*!*!*!*!*!*!TEACHING FINISH!*!*!*!*!*!*!*!*!*");
+		//printf("\nNumber of students waiting : %d",stud_wait);
+		pthread_mutex_unlock(&mutex);
+	        sem_post(&s_Tass);
+		}
+		else
+		{
+			if(ta_flag==0)
+			{
+				printf("\n\n\t#-#-#-#-#-#-#-#-#-NO STUDENTS WAITING....TEACHER IS SLEEPING-#-#-#-#-#-#-#-#-#");
+				ta_flag=1;
+			}
+		}
+	}
 }
 
 int main(int argc,char *argv[])
